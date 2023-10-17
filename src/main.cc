@@ -12,48 +12,79 @@ void Usage()
 
 int MIN, MAX;
 
-void fillMatrix(std::vector<std::vector<int>> &Matrix, std::string line, int fila)
+bool checkIfItsNum(char character_to_check) 
 {
-    for (int i = 0; i < line.size(); i++)
+    // std::cout << character_to_check << "\n";
+    // NO FUNCIONA PARA VALORES SUPERIORES A 9 DEBIDO A QUE SE EXAMINA DIGITO A DIGITO
+    if (character_to_check == '0' || character_to_check == '1' || character_to_check == '2' || character_to_check == '3' || character_to_check == '4' || character_to_check == '5' || character_to_check == '6' || character_to_check == '7' || character_to_check == '8' || character_to_check == '9' )
     {
-
-        char car = line[i];
-
-        // Matrix.emplace_back(1);
-        // Matrix.emplace_back(2);
-        // Matrix.emplace_back(3);
-        // Matrix.emplace_back(4);
-        if (car == ' ')
-        {
-            // std::cout << line[i];
-        }
-        else if (car == '-')
-        {
-            Matrix[fila].emplace_back(MIN - 1);
-        }
-        else
-        {
-
-            Matrix[fila].emplace_back(std::stoi(std::to_string(car)));
-        }
+        // std::cout << "entro" << "\n";
+        return true;
     }
 
-    // std::cout << Matrix[0][0] << "AQUI" << std::endl;
+    return false;
 }
 
-void printMatrix(std::vector<std::vector<int>> Matrix)
+std::vector<double> convertStringVec_Into_DoubleVec (std::string line )
 {
-    for (int i = 0; i < Matrix.size(); i++)
+    std::vector<double> double_vec;
+    //std::cout << line << "\n";
+    for(int i = 0; i < line.size(); i++) 
     {
-        for (int j = 0; i < Matrix[i].size(); j++)
+        std::string substr = "";
+        // std::cout << "llega";
+        // std::cout << "check(" << line[i] << ")";
+        // std::cout << "check(" << std::to_string(line[i]) << ")";
+        //std::cout << line[i] << " ";
+        if (checkIfItsNum(line[i])) 
         {
+            // std::cout << "llega2";
+            substr = line[i];
+            substr += line[i + 1];
+            substr += line[i + 2];
+            substr += line[i + 3];
+            substr += line[i + 4];
+            i += 4;
+            // std::cout << substr;
+            double_vec.emplace_back(std::stod(substr));
+            // std::cout << ".\n";
+        }
+        else if (line[i] == '-') 
+        {
+            double_vec.emplace_back(-1.000);
+        }
+        else 
+        {
+
+        }
+    }
+    return double_vec;
+}
+
+void printMatrix(std::vector<std::vector<double>> Matrix) 
+{
+    for (int i = 0; i < Matrix.size(); i++) 
+    {
+        //std::cout << "entra\n";
+        for (int j = 0; j < Matrix[i].size(); j++) 
+        {
+            //std::cout << "entra\n";
             std::cout << Matrix[i][j] << " ";
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
 }
 
-int ConvertirANumero(std::string caracter);
+std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec)
+{
+    std::vector<std::vector<double>> Matrix;
+    for (int i= 0; i < lines_vec.size(); i++) 
+    {
+        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i]));
+    }
+    return Matrix;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -61,7 +92,7 @@ int main(int argc, char *argv[])
 
     std::string linea;
 
-    std::vector<std::vector<int>> Matrix;
+    std::vector<std::vector<double>> Matrix;
 
     // valor minimo de puntuación asignable
     std::getline(matriz, linea);
@@ -70,21 +101,25 @@ int main(int argc, char *argv[])
     std::getline(matriz, linea);
     MAX = std::stoi(linea);
 
+    //std::cout << "Min:" << MIN << "\n";
+    //std::cout << "Max:" << MAX << "\n";
+
     int fila = 0;
+    std::vector<std::string> lines_vec;
     while (std::getline(matriz, linea))
     {
-        fillMatrix(Matrix, linea, fila);
+        //fillMatrix(Matrix, linea, fila);
+        lines_vec.emplace_back(linea);
         fila++;
     }
-    // printMatrix(Matrix);
-    return 0;
-}
 
-int ConvertirANumero(std::string caracter)
-{
-    if (caracter == "-")
-    {
-        return MIN - 1;
-    }
-    return std::stoi(caracter);
+    // for (int i = 0; i  < lines_vec.size(); i++) 
+    // {
+    //     std::cout << lines_vec[i] << "\n";
+    // }
+
+    Matrix = fillMatrix(lines_vec);
+
+    printMatrix(Matrix);
+    return 0;
 }
