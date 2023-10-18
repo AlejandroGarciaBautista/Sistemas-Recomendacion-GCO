@@ -10,7 +10,7 @@ double calcularMedia (std::vector<double> usu, double MIN) {
             suma_calificaciones += usu[i];
         }
     }
-    return calificados = 0 ? 0 : suma_calificaciones/calificados;
+    return calificados == 0 ? 0 : suma_calificaciones/calificados;
 };
 
 

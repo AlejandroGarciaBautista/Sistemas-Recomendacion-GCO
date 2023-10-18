@@ -1,17 +1,19 @@
 #include <vector>
 #include <cmath>
 
+#include "../Metricas/correlacion_Pearson.cc"
+
 double distEuclidea(std::vector<double> usu1, std::vector<double> usu2, double MIN) {
-    double sumNumerador = 0.0;
-    double sumDenominadorUsu1 = 0.0;
-    double sumDenominadorUsu2 = 0.0;
-    double resultado = 0.0;
+    const double mediaUsu1 = calcularMedia(usu1, MIN);
+    const double mediaUsu2 = calcularMedia(usu2, MIN);
+    
+    double sum = 0.0;
+    double resultadoEuclid = 0.0;
     for (int i = 0; i < usu1.size(); i++) {
         if(usu1[i] != MIN - 1 && usu2[i] != MIN - 1) {
-            sumNumerador += (usu1[i]*usu2[i]);
-            sumDenominadorUsu1 += pow(usu1[i],2);
-            sumDenominadorUsu2 += pow(usu2[i],2);
+            sum += pow(usu1[i]-usu2[i],2)
         }
     }
-    return (sumNumerador / (sqrt(sumDenominadorUsu1) * sqrt(sumDenominadorUsu2)));
+    resultadoEuclid = sqrt(sum);
+    return (sqrt(sumDenominadorUsu1) * sqrt(sumDenominadorUsu2));
 };

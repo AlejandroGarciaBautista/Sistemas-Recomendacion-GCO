@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 #include "./Metricas/correlacion_Pearson.cc"
+#include "./Metricas/distancia_Coseno.cc"
 
 // Ejecución ./sistemas_recomendacion -f <fichero> -m <metrica> -v <vecinos> -p <prediccion>
 double MIN, MAX;
@@ -162,22 +163,21 @@ int main(int argc, char *argv[])
     std::cout << "\nMatriz Normalizada:\n";
     printMatrix(Matrix);
 
+    std::vector<double> primero = {5.0, 3.0, 4.0, 4.0};
+
+    std::vector<double> segundo = {3.0,1.0,2.0,3.0};
     switch (metodo) {
         case 1:
-            std::cout << "COEF CORREL: " << coefCorrel(Matrix[0], Matrix[1], MIN) << "\n"; 
+            std::cout << "COEF CORREL: " << coefCorrel(primero, segundo, MIN) << "\n"; 
             break;
         case 2:
+            std::cout << "Distancia Coseno: " << distCoseno(primero, segundo, MIN) << "\n";
             break;
         case 3:
+            std::cout << "Distancia Euclidea: ";
             break;
         default:
             break;
     }
-
-    // denormalizarMatrix(Matrix);
-    // std::cout << "\nMatriz Denormalizada:\n";
-    // printMatrix(Matrix);
-
-
     return 0;
 }
