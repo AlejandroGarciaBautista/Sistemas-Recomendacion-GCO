@@ -1,6 +1,8 @@
-#include <vector>
-#include <cmath>
+#include "../includes/Metricas/Metricas.h"
 
+/**
+ * Calculamos la similitud entre dos usuarios haciendo uso de la Distancia Coseno
+*/
 double distCoseno(std::vector<double> usu1, std::vector<double> usu2, double MIN) {
     double sumNumerador = 0.0;
     double sumDenominadorUsu1 = 0.0;
@@ -14,4 +16,4 @@ double distCoseno(std::vector<double> usu1, std::vector<double> usu2, double MIN
         }
     }
     return (sumNumerador / (sqrt(sumDenominadorUsu1) * sqrt(sumDenominadorUsu2)));
-};
+}

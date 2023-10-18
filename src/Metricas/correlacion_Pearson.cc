@@ -1,19 +1,8 @@
-#include <vector>
-#include <cmath>
+#include "includes/Utils.h"
 
-double calcularMedia (std::vector<double> usu, double MIN) {
-    int calificados = 0;
-    double suma_calificaciones = 0.0;
-    for(int i = 0; i < usu.size(); i++) {
-        if (usu[i] != MIN - 1) {
-            calificados++;
-            suma_calificaciones += usu[i];
-        }
-    }
-    return calificados == 0 ? 0 : suma_calificaciones/calificados;
-};
-
-
+/**
+ * Calculamos la similitud entre dos usuarios haciendo uso del Coefficiente de Correlación de Pearson
+*/
 double coefCorrel(std::vector<double> usu1, std::vector<double> usu2, double MIN) {
     double mediaUsu1 = calcularMedia(usu1,MIN);
     double mediaUsu2 = calcularMedia(usu2,MIN);
@@ -29,5 +18,4 @@ double coefCorrel(std::vector<double> usu1, std::vector<double> usu2, double MIN
         }
     }
     return (sumNumerador / (sqrt(sumDenominadorUsu1) * sqrt(sumDenominadorUsu2)));
-};
-
+}
