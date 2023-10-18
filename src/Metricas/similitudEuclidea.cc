@@ -15,5 +15,6 @@ double distEuclidea(std::vector<double> usu1, std::vector<double> usu2, double M
         }
     }
     resultadoEuclid = sqrt(sum);
+    return 1 / resultadoEuclid;
     // return (sqrt(sumDenominadorUsu1) * sqrt(sumDenominadorUsu2));
 }
