@@ -3,14 +3,71 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
+
+#include "./Metricas/correlacion_Pearson.cc"
 
 // Ejecución ./sistemas_recomendacion -f <fichero> -m <metrica> -v <vecinos> -p <prediccion>
+double MIN, MAX;
 
-void Usage()
+void normalizarMatrix(std::vector<std::vector<double>> &matrix) 
 {
+    for (int i = 0; i < matrix.size(); i++) 
+    {
+        for (int j = 0; j  < matrix[i].size(); j++)
+        {
+            // Formula de normalizacion
+            if (matrix[i][j] == MIN -1) 
+            {
+                matrix[i][j] = MIN -1;
+            }
+            else 
+            {
+                // z i = (x i – mínimo (x)) / (máximo (x) – mínimo (x)) 
+                matrix[i][j] = (matrix[i][j] - MIN) / (MAX - MIN); 
+            }
+        }
+    }
 }
 
-int MIN, MAX;
+void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada) 
+{
+    for (int i = 0; i < matrixNormalizada.size(); i++)
+    {
+        for (int j = 0; j < matrixNormalizada[i].size(); j++)
+        {
+            if (matrixNormalizada[i][j] == MIN -1) 
+            {
+                matrixNormalizada[i][j] = MIN -1;
+            }
+            else 
+            {
+                matrixNormalizada[i][j] = (matrixNormalizada[i][j] * (MAX - MIN)) + MIN;
+            }
+        }
+    }
+}
+
+void Usage(int argc, char* argv[])
+{
+    if (argc == 2) 
+    {
+        std::string ayuda{argv[1]};
+        if (ayuda == "--help") {
+            std::cout << "Ejecución: ./sistemas_recomendacion -f <fichero> -m <metrica> -v <vecinos> -p <prediccion>" << std::endl;
+            std::cout << "Metrica:\nElige entre: 1. Correlación de Pearson\n2. Distancia Coseno\n3. Distancia Euclidea" << std::endl;
+            std::cout << "Vecinos: Elige la cantidad de vecinos con los que se va a comparar" << std::endl;
+            std::cout << "Predicción:\nElige entre: 1. Diferencia con media\n2. Predicción Simple\n" << std::endl;
+            exit(EXIT_SUCCESS);
+        }
+    }
+
+    if (argc != 9) {
+        std::cout << "¡Error en la ejecución del programa!" << std::endl;
+        std::cout << "Para obtener más informacion ejecute " << argv[0] << " --help" << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+}
 
 bool checkIfItsNum(char character_to_check) 
 {
@@ -18,7 +75,6 @@ bool checkIfItsNum(char character_to_check)
     // NO FUNCIONA PARA VALORES SUPERIORES A 9 DEBIDO A QUE SE EXAMINA DIGITO A DIGITO
     if (character_to_check == '0' || character_to_check == '1' || character_to_check == '2' || character_to_check == '3' || character_to_check == '4' || character_to_check == '5' || character_to_check == '6' || character_to_check == '7' || character_to_check == '8' || character_to_check == '9' )
     {
-        // std::cout << "entro" << "\n";
         return true;
     }
 
@@ -28,34 +84,22 @@ bool checkIfItsNum(char character_to_check)
 std::vector<double> convertStringVec_Into_DoubleVec (std::string line )
 {
     std::vector<double> double_vec;
-    //std::cout << line << "\n";
     for(int i = 0; i < line.size(); i++) 
     {
         std::string substr = "";
-        // std::cout << "llega";
-        // std::cout << "check(" << line[i] << ")";
-        // std::cout << "check(" << std::to_string(line[i]) << ")";
-        //std::cout << line[i] << " ";
-        if (checkIfItsNum(line[i])) 
+        if (checkIfItsNum(line[i]))
         {
-            // std::cout << "llega2";
             substr = line[i];
             substr += line[i + 1];
             substr += line[i + 2];
             substr += line[i + 3];
             substr += line[i + 4];
             i += 4;
-            // std::cout << substr;
             double_vec.emplace_back(std::stod(substr));
-            // std::cout << ".\n";
         }
         else if (line[i] == '-') 
         {
-            double_vec.emplace_back(-1.000);
-        }
-        else 
-        {
-
+            double_vec.emplace_back(MIN -1 );
         }
     }
     return double_vec;
@@ -88,8 +132,9 @@ std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec)
 
 int main(int argc, char *argv[])
 {
-    std::ifstream matriz{argv[1]};
-
+    //Usage(argc, argv);
+    std::ifstream matriz{argv[2]};
+    int metodo = std::stoi(argv[4]), vecinos = std::stoi(argv[6]), prediccion = std::stoi(argv[8]);
     std::string linea;
 
     std::vector<std::vector<double>> Matrix;
@@ -101,25 +146,38 @@ int main(int argc, char *argv[])
     std::getline(matriz, linea);
     MAX = std::stoi(linea);
 
-    //std::cout << "Min:" << MIN << "\n";
-    //std::cout << "Max:" << MAX << "\n";
-
     int fila = 0;
     std::vector<std::string> lines_vec;
     while (std::getline(matriz, linea))
     {
-        //fillMatrix(Matrix, linea, fila);
         lines_vec.emplace_back(linea);
         fila++;
     }
 
-    // for (int i = 0; i  < lines_vec.size(); i++) 
-    // {
-    //     std::cout << lines_vec[i] << "\n";
-    // }
-
     Matrix = fillMatrix(lines_vec);
-
+    std::cout << "MATRIZ DE ENTRADA:\n";
     printMatrix(Matrix);
+    
+    normalizarMatrix(Matrix);
+    std::cout << "\nMatriz Normalizada:\n";
+    printMatrix(Matrix);
+
+    switch (metodo) {
+        case 1:
+            std::cout << "COEF CORREL: " << coefCorrel(Matrix[0], Matrix[1], MIN) << "\n"; 
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        default:
+            break;
+    }
+
+    // denormalizarMatrix(Matrix);
+    // std::cout << "\nMatriz Denormalizada:\n";
+    // printMatrix(Matrix);
+
+
     return 0;
 }
