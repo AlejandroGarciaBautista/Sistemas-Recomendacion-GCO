@@ -156,21 +156,25 @@ int main(int argc, char *argv[])
     std::cout << "\nMatriz Normalizada:\n";
     printMatrix(Matrix);
 
-    std::vector<double> primero = {5.0, 3.0, 4.0, 4.0};
+    
+    Start(Matrix, metodo, vecinos, prediccion);
 
-    std::vector<double> segundo = {3.0,1.0,2.0,3.0};
-    switch (metodo) {
-        case 1:
-            std::cout << "COEF CORREL: " << coefCorrel(primero, segundo, MIN) << "\n";
-            break;
-        case 2:
-            std::cout << "Distancia Coseno: " << distCoseno(primero, segundo, MIN) << "\n";
-            break;
-        case 3:
-            std::cout << "Distancia Euclidea: ";
-            break;
-        default:
-            break;
-    }
+    
+    // std::vector<double> primero = {5.0, 3.0, 4.0, 4.0};
+
+    // std::vector<double> segundo = {3.0,1.0,2.0,3.0};
+    // switch (metodo) {
+    //     case 1:
+    //         std::cout << "COEF CORREL: " << coefCorrel(primero, segundo, MIN) << "\n";
+    //         break;
+    //     case 2:
+    //         std::cout << "Distancia Coseno: " << distCoseno(primero, segundo, MIN) << "\n";
+    //         break;
+    //     case 3:
+    //         std::cout << "Distancia Euclidea: ";
+    //         break;
+    //     default:
+    //         break;
+    // }
     return 0;
 }
