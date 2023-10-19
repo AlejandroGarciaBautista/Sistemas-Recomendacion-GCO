@@ -17,7 +17,7 @@ bool checkIfItsNum(char character_to_check);
 std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min);
 void printMatrix(std::vector<std::vector<double>> Matrix);
 std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min);
-double calcularMedia (std::vector<double> usu, double min);
+double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, double min);
 
 
 // Uso de la aplicación

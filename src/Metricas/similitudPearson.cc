@@ -21,8 +21,8 @@
 // }
 
 double coefCorrel(std::vector<double> usu1, std::vector<double> usu2, double min) {
-    double mediaUsu1 = calcularMedia(usu1, min);
-    double mediaUsu2 = calcularMedia(usu2, min);
+    double mediaUsu1 = calcularMedia(usu1, usu1, min);
+    double mediaUsu2 = calcularMedia(usu2, usu1, min);
     double sumNumerador = 0.0;
     double sumDenominadorUsu1 = 0.0;
     double sumDenominadorUsu2 = 0.0;

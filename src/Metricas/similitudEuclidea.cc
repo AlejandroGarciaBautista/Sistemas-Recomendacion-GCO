@@ -4,8 +4,8 @@
  * Calculamos la similitud entre dos usuarios haciendo uso de la Distancia Euclidea
 */
 double distEuclidea(std::vector<double> usu1, std::vector<double> usu2, double min) {
-    const double mediaUsu1 = calcularMedia(usu1, min);
-    const double mediaUsu2 = calcularMedia(usu2, min);
+    const double mediaUsu1 = calcularMedia(usu1, usu1, min);
+    const double mediaUsu2 = calcularMedia(usu2, usu1, min);
     
     double sum = 0.0;
     double resultadoEuclid = 0.0;

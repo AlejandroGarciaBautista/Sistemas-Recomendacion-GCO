@@ -121,14 +121,28 @@ std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, 
     return Matrix;
 }
 
-double calcularMedia (std::vector<double> usu, double min) {
+// double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, double min) {
+//     int calificados = 0;
+//     double suma_calificaciones = 0.0;
+//     for(int i = 0; i < usu.size(); i++) {
+//         if (usu[i] != min - 1) {
+//             calificados++;
+//             suma_calificaciones += usu[i];
+//         }
+//     }
+//     return calificados == 0 ? 0 : suma_calificaciones/calificados;
+// }
+
+double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, double min) {
     int calificados = 0;
     double suma_calificaciones = 0.0;
-    for(int i = 0; i < usu.size(); i++) {
+    int i = 0;
+    while (pivot_user[i] != min - 1) {
         if (usu[i] != min - 1) {
             calificados++;
             suma_calificaciones += usu[i];
         }
+        i++;
     }
     return calificados == 0 ? 0 : suma_calificaciones/calificados;
 }
@@ -146,6 +160,7 @@ void Start(std::vector<std::vector<double>> matrix, int metodo, int vecinos, int
         for (int j = 0; j < all_similarity.size(); j++)
         {
             std::cout << "Similitud usuario: " << all_similarity[j].first << " = " << all_similarity[j].second << std::endl;
+            std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
         }
         
         // Guardo los vecinos que me interesan
