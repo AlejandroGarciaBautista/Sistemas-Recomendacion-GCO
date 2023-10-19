@@ -10,20 +10,12 @@ El código esta organizad en los siguientes directorios:
 ```bash
 .
 ├── build --> Aqui encontramos el ejecutable y los ficheros de prueba
-├── docs --> Aqui se encontrara la documentación creada automaticamente a partir del código
 └── src --> Aquí tendremos todo el codigo fuente del programa
-    ├── Metricas
-    └── Predicciones
-
-.
-├── build
-├── docs
-└── src
-    ├── Metricas
-    ├── Predicciones
-    └── includes
+    └── includes --> Aqui encontramos todos los ficheros .h de nuestro programa
         ├── Metricas
         └── Predicciones
+    ├── Metricas --> Aquí tenemos todo los ficheros .cc de las metricas a usar
+    ├── Predicciones --> Aquí tenemos todos los ficheros .cc de las predicciones a user
 
 ```
 

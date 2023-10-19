@@ -1,39 +1,40 @@
 #include "./includes/Utils.h"
 #include "./includes/Metricas/Metricas.h"
+#include "./includes/Predicciones/Predicciones.h"
 
-void normalizarMatrix(std::vector<std::vector<double>> &matrix) 
+void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, double max) 
 {
     for (int i = 0; i < matrix.size(); i++) 
     {
         for (int j = 0; j  < matrix[i].size(); j++)
         {
             // Formula de normalizacion
-            if (matrix[i][j] == MIN -1) 
+            if (matrix[i][j] == min -1) 
             {
-                matrix[i][j] = MIN -1;
+                matrix[i][j] = min -1;
             }
             else 
             {
                 // z i = (x i – mínimo (x)) / (máximo (x) – mínimo (x)) 
-                matrix[i][j] = (matrix[i][j] - MIN) / (MAX - MIN); 
+                matrix[i][j] = (matrix[i][j] - min) / (max - min); 
             }
         }
     }
 }
 
-void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada) 
+void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada, double min, double max) 
 {
     for (int i = 0; i < matrixNormalizada.size(); i++)
     {
         for (int j = 0; j < matrixNormalizada[i].size(); j++)
         {
-            if (matrixNormalizada[i][j] == MIN -1) 
+            if (matrixNormalizada[i][j] == min -1) 
             {
-                matrixNormalizada[i][j] = MIN -1;
+                matrixNormalizada[i][j] = min -1;
             }
             else 
             {
-                matrixNormalizada[i][j] = (matrixNormalizada[i][j] * (MAX - MIN)) + MIN;
+                matrixNormalizada[i][j] = (matrixNormalizada[i][j] * (max - min)) + min;
             }
         }
     }
@@ -72,7 +73,7 @@ bool checkIfItsNum(char character_to_check)
     return false;
 }
 
-std::vector<double> convertStringVec_Into_DoubleVec (std::string line )
+std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min)
 {
     std::vector<double> double_vec;
     for(int i = 0; i < line.size(); i++) 
@@ -90,7 +91,7 @@ std::vector<double> convertStringVec_Into_DoubleVec (std::string line )
         }
         else if (line[i] == '-') 
         {
-            double_vec.emplace_back(MIN -1 );
+            double_vec.emplace_back(min -1 );
         }
     }
     return double_vec;
@@ -110,21 +111,21 @@ void printMatrix(std::vector<std::vector<double>> Matrix)
     }
 }
 
-std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec)
+std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min)
 {
     std::vector<std::vector<double>> Matrix;
     for (int i= 0; i < lines_vec.size(); i++) 
     {
-        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i]));
+        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i], min));
     }
     return Matrix;
 }
 
-double calcularMedia (std::vector<double> usu, double MIN) {
+double calcularMedia (std::vector<double> usu, double min) {
     int calificados = 0;
     double suma_calificaciones = 0.0;
     for(int i = 0; i < usu.size(); i++) {
-        if (usu[i] != MIN - 1) {
+        if (usu[i] != min - 1) {
             calificados++;
             suma_calificaciones += usu[i];
         }
@@ -132,15 +133,46 @@ double calcularMedia (std::vector<double> usu, double MIN) {
     return calificados == 0 ? 0 : suma_calificaciones/calificados;
 }
 
-void Start(std::vector<std::vector<double>> matrix, int metodo, int vecinos, int prediccion) {
-    int usuario_a_completar = 0; // Ir realizando las iteraciones con esta variable para saber cual es el siguiente usuario 
-    std::vector<std::pair<int,double>> similitudes = GetAllSimilarity(matrix, metodo, usuario_a_completar);
-    // Guardo los vecinos que me interesan
-    std::vector<std::pair<int,double>> similitudes_vecinos = GetNHighest(vecinos, similitudes);
-    // Inicio la predicción para ese usuario
+void Start(std::vector<std::vector<double>> matrix, int metodo, int vecinos, int prediccion, double min, double max) {
+    std::vector<std::pair<int,int>> questions = FindAllQuestions(matrix, min);
+    for (int i = 0; i < questions.size(); i++) 
+    {
+        int user = questions[i].first;
+        int item = questions[i].second;
+
+        // Obtengo las similitudes del usuario actual con los demas
+        std::vector<std::pair<int,double>> all_similarity = GetAllSimilarity(matrix, metodo, user, min);
+        
+        for (int j = 0; j < all_similarity.size(); j++)
+        {
+            std::cout << "Similitud usuario: " << all_similarity[j].first << " = " << all_similarity[j].second << std::endl;
+        }
+        
+        // Guardo los vecinos que me interesan
+        std::vector<std::pair<int,double>> similarity_neighbors = GetNHighest(vecinos, all_similarity);
+        // Inicio la predicción para ese usuario
+        double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediccion, user, min);
+        std::cout << "Prediccion: " << prediction_result << std::endl;
+    }
+    
 }
 
-std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<double>> matrix, int metodo, int inicio) 
+double GetPrediction(std::vector<std::vector<double>> data, int item, std::vector<std::pair<int,double>> similarity_neighbors, int prediction, int user, int min)
+{
+    double result;
+    switch (prediction)
+    {
+        case 1:
+            result = SimplePrediction(data, item, similarity_neighbors);
+            break;
+        case 2:
+            result = DifferenceWithAverage(data, item, user, similarity_neighbors, min);
+            break;
+    }
+    return result;
+}
+
+std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<double>> matrix, int metodo, int inicio, double min) 
 {
     std::vector<std::pair<int,double>> result;
     switch (metodo) {
@@ -148,17 +180,17 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
             if (inicio != 0) {
                 for (int i = 0; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], min)));
                 }
 
                 for (int i = inicio + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], min)));
                 }
             } else {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[0], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, coefCorrel(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -168,17 +200,17 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
             if (inicio != 0) {
                 for (int i = 0; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], min)));
                 }
 
                 for (int i = inicio + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], min)));
                 }
             } else {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[0], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distCoseno(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -188,17 +220,17 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
             if (inicio != 0) {
                 for (int i = 0; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], min)));
                 }
 
                 for (int i = inicio + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], min)));
                 }
             } else {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[0], matrix[i], MIN)));
+                    result.push_back(std::make_pair(i, distEuclidea(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -219,4 +251,20 @@ std::vector<std::pair<int,double>> GetNHighest(int vecinos, std::vector<std::pai
     }
 
     return similitud_vecinos;
+}
+
+std::vector<std::pair<int,int>> FindAllQuestions(std::vector<std::vector<double>> matrix, double min)
+{
+    std::vector<std::pair<int,int>> questions;
+    for (int i = 0; i < matrix.size(); i++)
+    {
+        for (int j = 0; j < matrix[i].size(); j++)
+        {
+            if (matrix[i][j] == min - 1)
+            {
+                questions.push_back(std::make_pair(i, j));
+            }
+        }
+    }
+    return questions;
 }

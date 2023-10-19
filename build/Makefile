@@ -1,10 +1,9 @@
 CXX = g++
-CXXFLAGS = -g -w
+CXXFLAGS = -std=c++2a -g
 NAMEGLAGS = -o
-SRC = src
 
 make:
-	$(CXX) $(CXXFLAGS) ../$(SRC)/main.cc $(NAMEGLAGS) sistemas_recomendacion
+	$(CXX) $(NAMEGLAGS) sistemas_recomendacion $(CXXFLAGS) ../src/*.cc ../src/Metricas/*.cc ../src/Predicciones/*.cc -I .
 
 .PHONY: all clean
 
@@ -12,4 +11,3 @@ make:
 
 clean :
 	rm -f sistemas_recomendacion *.o
-	rm -rf *~ basura b i
