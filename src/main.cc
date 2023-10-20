@@ -30,11 +30,14 @@ int main(int argc, char *argv[])
     std::cout << "MATRIZ DE ENTRADA:\n";
     // printMatrix(Matrix);
     
-    // normalizarMatrix(Matrix, min, max);
-    // std::cout << "\nMatriz Normalizada:\n";
+    normalizarMatrix(Matrix, min, max);
+    std::cout << "\nMatriz Normalizada:\n";
     // printMatrix(Matrix);
 
     Start(Matrix, metodo, vecinos, prediccion, min, max);
+
+    denormalizarMatrix(Matrix, min, max);
+    printMatrix(Matrix);
 
     return 0;
 }
