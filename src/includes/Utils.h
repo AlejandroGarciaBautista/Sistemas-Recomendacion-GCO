@@ -16,9 +16,9 @@ void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, doub
 void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada, double min, double max);
 void Usage(int argc, char* argv[]);
 bool checkIfItsNum(char character_to_check);
-std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min);
+std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min, double max);
 void printMatrix(std::vector<std::vector<double>> Matrix);
-std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min);
+std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min, double max);
 double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, double min);
 
 

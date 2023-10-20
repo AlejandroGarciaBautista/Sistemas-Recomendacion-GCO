@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         fila++;
     }
 
-    Matrix = fillMatrix(lines_vec, min);
+    Matrix = fillMatrix(lines_vec, min, max);
     //std::cout << "MATRIZ DE ENTRADA:\n";
     // printMatrix(Matrix);
     

@@ -78,7 +78,15 @@ bool checkIfItsNum(char character_to_check)
     return false;
 }
 
-std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min)
+void checkCorrectMatrixElement(double checked_num, double min, double max)
+{
+    if (checked_num < min || checked_num > max) {
+        std::cout << "El valor " << checked_num << " se encuentra fuera del rango de la matrix(" << min << "," << max << ")\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min, double max)
 {
     std::vector<double> double_vec;
     for(int i = 0; i < line.size(); i++) 
@@ -92,6 +100,8 @@ std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double mi
             substr += line[i + 3];
             substr += line[i + 4];
             i += 4;
+            // gestion de errores
+            checkCorrectMatrixElement(std::stod(substr), min, max);
             double_vec.emplace_back(std::stod(substr));
         }
         else if (line[i] == '-') 
@@ -117,12 +127,12 @@ void printMatrix(std::vector<std::vector<double>> Matrix)
     }
 }
 
-std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min)
+std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min, double max)
 {
     std::vector<std::vector<double>> Matrix;
     for (int i= 0; i < lines_vec.size(); i++) 
     {
-        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i], min));
+        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i], min, max));
     }
     return Matrix;
 }
