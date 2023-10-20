@@ -6,10 +6,10 @@ double SimplePrediction(std::vector<std::vector<double>> data, int item, std::ve
 
   for (int i = 0; i < similarity_neighbors.size(); i++) {
     double aux = (similarity_neighbors[i].second * data[similarity_neighbors[i].first][item]);
-    // std::cout << aux << std::endl;
     sum_of_items += aux;
     sum_of_similarities += fabs(similarity_neighbors[i].second);
   }
+  
   result = sum_of_items / sum_of_similarities;
   return result;
 }

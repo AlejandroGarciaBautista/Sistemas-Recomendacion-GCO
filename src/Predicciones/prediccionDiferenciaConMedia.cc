@@ -3,7 +3,6 @@
 double DifferenceWithAverage(std::vector<std::vector<double>> data, int item, int user, std::vector<std::pair<int,double>> similarity_neighbors, int min)
 {
   double average_user = calcularMedia(data[user], data[user], min);
-  std::cout << "Media pivote: " << average_user << std::endl;
   double result = average_user, sum_of_items = 0, sum_of_similarities = 0;
 
   for (int i = 0; i < similarity_neighbors.size(); i++) {

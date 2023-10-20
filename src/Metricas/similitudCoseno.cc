@@ -9,6 +9,9 @@ double distCoseno(std::vector<double> usu1, std::vector<double> usu2, double min
     double sumDenominadorUsu2 = 0.0;
     double resultado = 0.0;
     for (int i = 0; i < usu1.size(); i++) {
+        if (usu1[i] == min -1 && usu2[i] == min - 1) {
+            return -2;
+        }
         if(usu1[i] != min - 1 && usu2[i] != min - 1) {
             sumNumerador += (usu1[i]*usu2[i]);
             sumDenominadorUsu1 += pow(usu1[i],2);

@@ -27,15 +27,16 @@ int main(int argc, char *argv[])
     }
 
     Matrix = fillMatrix(lines_vec, min);
-    std::cout << "MATRIZ DE ENTRADA:\n";
+    //std::cout << "MATRIZ DE ENTRADA:\n";
     // printMatrix(Matrix);
     
     normalizarMatrix(Matrix, min, max);
-    std::cout << "\nMatriz Normalizada:\n";
-    // printMatrix(Matrix);
+    //std::cout << "\nMatriz Normalizada:\n";
+    //printMatrix(Matrix);
 
     Start(Matrix, metodo, vecinos, prediccion, min, max);
 
+    // std::cout << "\nMatriz Desnormalizada\n";
     denormalizarMatrix(Matrix, min, max);
     printMatrix(Matrix);
 

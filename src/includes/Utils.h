@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <iomanip>
 
+double normalizarNumero(double num, int min,int max);
 void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, double max);
 void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada, double min, double max);
 void Usage(int argc, char* argv[]);

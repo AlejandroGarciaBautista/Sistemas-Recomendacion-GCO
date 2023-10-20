@@ -2,6 +2,11 @@
 #include "./includes/Metricas/Metricas.h"
 #include "./includes/Predicciones/Predicciones.h"
 
+double normalizarNumero(double num, int min,int max)
+{
+    return ((num - min) / (max - min));
+}
+
 void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, double max) 
 {
     for (int i = 0; i < matrix.size(); i++) 
@@ -165,6 +170,11 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
         
         // Guardo los vecinos que me interesan
         std::vector<std::pair<int,double>> similarity_neighbors = GetNHighest(vecinos, all_similarity);
+        for (int j = 0; j < similarity_neighbors.size(); j++)
+        {
+            std::cout << "Similitud elegida usuario: " << similarity_neighbors[j].first << " = " << similarity_neighbors[j].second << std::endl;
+            // std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
+        }
         // Inicio la predicción para ese usuario
         double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediccion, user, min);
         std::cout << "Prediccion: " << prediction_result << std::endl;
@@ -266,9 +276,10 @@ std::vector<std::pair<int,double>> GetNHighest(int vecinos, std::vector<std::pai
     });
 
     for (int i = 0; i < vecinos && i < pairs.size(); i++) {
-        similitud_vecinos.push_back(pairs[i]);
+        if (pairs[i].second != -2.000) {
+            similitud_vecinos.push_back(pairs[i]);
+        }
     }
-
     return similitud_vecinos;
 }
 
