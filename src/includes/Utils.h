@@ -18,10 +18,10 @@ void Usage(int argc, char *argv[], std::string& file_name, int& m, int& v, int& 
 
 // Funtions related to managing the matrix
 void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, double max);
-void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada, double min, double max);
-void printMatrix(std::vector<std::vector<double>> Matrix);
+void denormalizarMatrix(std::vector<std::vector<double>> &normalized_matrix, double min, double max);
+void printMatrix(std::vector<std::vector<double>> matrix);
 std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min, double max);
-void fillGap(std::vector<std::vector<double>> &Matrix, int usu , int item, double prediction, double max);
+void fillGap(std::vector<std::vector<double>> &matrix, int usu , int item, double prediction, double max);
 
 // double normalizarNumero(double num, int min,int max);
 

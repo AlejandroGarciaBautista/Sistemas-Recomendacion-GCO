@@ -95,8 +95,7 @@ void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, doub
     {
         for (int j = 0; j  < matrix[i].size(); j++)
         {
-            // Formula de normalizacion
-            if (matrix[i][j] == min -1) 
+            if (matrix[i][j] == min -1) // If the position matches with a - it is not normalize
             {
                 matrix[i][j] = min -1;
             }
@@ -113,19 +112,19 @@ void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, doub
  * Function to denormalize the matrix, this function changes the range from [0, 1]
  * to the original range defined by [min,max]
 */
-void denormalizarMatrix(std::vector<std::vector<double>> &matrixNormalizada, double min, double max) 
+void denormalizarMatrix(std::vector<std::vector<double>> &normalized_matrix, double min, double max) 
 {
-    for (int i = 0; i < matrixNormalizada.size(); i++)
+    for (int i = 0; i < normalized_matrix.size(); i++)
     {
-        for (int j = 0; j < matrixNormalizada[i].size(); j++)
+        for (int j = 0; j < normalized_matrix[i].size(); j++)
         {
-            if (matrixNormalizada[i][j] == min -1) 
+            if (normalized_matrix[i][j] == min -1) 
             {
-                matrixNormalizada[i][j] = min -1;
+                normalized_matrix[i][j] = min -1;
             }
             else 
             {
-                matrixNormalizada[i][j] = (matrixNormalizada[i][j] * (max - min)) + min;
+                normalized_matrix[i][j] = (normalized_matrix[i][j] * (max - min)) + min;
             }
         }
     }
@@ -158,7 +157,7 @@ void checkCorrectMatrixElement(double checked_num, double min, double max)
 /**
  * Function that converts a string into a vector of double
 */
-std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double min, double max)
+std::vector<double> convertStringVec_Into_DoubleVec(std::string line, double min, double max)
 {
     std::vector<double> double_vec;
     for(int i = 0; i < line.size(); i++) 
@@ -187,7 +186,7 @@ std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double mi
 /**
  * Function to print the matrix
 */
-void printMatrix(std::vector<std::vector<double>> Matrix) 
+void printMatrix(std::vector<std::vector<double>> matrix) 
 {
     // COLOR TEXT CLASS
     Color::Modifier blue = Color::FG_BLUE;
@@ -200,13 +199,13 @@ void printMatrix(std::vector<std::vector<double>> Matrix)
 
     std::cout << green << " --- MATRIZ DE UTILIDAD CON LAS PREDICCIONES RESULTANTES SUSTITUIDAS EN LOS '-' DE LA MATRIZ ORIGINAL ---" << def << "\n";
 
-    for (int i = 0; i < Matrix.size(); i++) 
+    for (int i = 0; i < matrix.size(); i++) 
     {
-        for (int j = 0; j < Matrix[i].size(); j++) 
+        for (int j = 0; j < matrix[i].size(); j++) 
         {
-            std::string elemento_como_string = std::to_string(Matrix[i][j]);
+            std::string elemento_como_string = std::to_string(matrix[i][j]);
             if(elemento_como_string.size() == 5) {
-                std::cout << blue << Matrix[i][j] << def << " ";
+                std::cout << blue << matrix[i][j] << def << " ";
             } else if (elemento_como_string.size() < 5) {
                 while (elemento_como_string.size() < 5)
                 {
@@ -255,13 +254,13 @@ double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, d
 /**
  * Function to fill the gap (-) of the item x of the user y.
 */
-void fillGap(std::vector<std::vector<double>> &Matrix, int usu , int item, double prediction, double max) 
+void fillGap(std::vector<std::vector<double>> &matrix, int usu , int item, double prediction, double max) 
 {
     if (prediction > 1) 
     {
-        Matrix[usu][item] = 1.000;
+        matrix[usu][item] = 1.000;
     } else {
-        Matrix[usu][item] = prediction;
+        matrix[usu][item] = prediction;
     }
 }
 
@@ -289,7 +288,6 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
         for (int j = 0; j < all_similarity.size(); j++)
         {
             std::cout << blue << "Similitud usuario: " << red << all_similarity[j].first << blue << " = " << red << all_similarity[j].second <<  def << std::endl;
-            // std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
         }
         
         // Guardo los vecinos que me interesan
@@ -297,7 +295,6 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
         for (int j = 0; j < similarity_neighbors.size(); j++)
         {
             std::cout << green << "Similitud elegida usuario: " << red << similarity_neighbors[j].first << green << " = " << red << similarity_neighbors[j].second << def << std::endl;
-            // std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
         }
         // Inicio la predicción para ese usuario
         double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediccion, user, min);

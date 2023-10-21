@@ -1,3 +1,17 @@
+/**
+ * Universidad de La Laguna
+ * Escuela Superior de Ingeniería y Tecnología
+ * Grado en Ingeniería Informática
+ * Asignatura: Gestión del Conocimiento en las Organizaciones
+ * Curso: 4º
+ * Sistemas de Recomendación. Métodos de filtrado colaborativo
+ * @authors: 
+ *  Alejandro García Bautista (alu0101387604)
+ *  Lucas Pérez Rosario (alu0101399928)
+ *  Adrián González Expósito (alu0101404813)
+ * @date: 24/10/2023
+ */
+
 #include "includes/Utils.h"
 #include "includes/Metricas/Metricas.h"
 #include "includes/Predicciones/Predicciones.h"
