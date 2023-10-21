@@ -4,41 +4,51 @@
 
 int main(int argc, char *argv[])
 {
-    // Usage(argc, argv);
-    std::ifstream matriz{argv[2]};
-    int metodo = std::stoi(argv[4]), vecinos = std::stoi(argv[6]), prediccion = std::stoi(argv[8]);
-    std::string linea;
-
+    // Variables declaration for the file name, metrics, neighbors, prediction and the matrix that will be used along the program
+    std::string file_name;
+    int metrics = -1, neighbors = -1, prediction = -1;
     std::vector<std::vector<double>> Matrix;
 
-    // valor minimo de puntuación asignable
-    std::getline(matriz, linea);
-    double min = std::stoi(linea);
-    // valor máximo de puntuación asignable
-    std::getline(matriz, linea);
-    double max = std::stoi(linea);
+    // Check correct use of the application and read the arguments of the CLI
+    Usage(argc, argv, file_name, metrics, neighbors, prediction);
+    std::ifstream matrix_file{file_name};
 
-    int fila = 0;
+    // Lets start reading the file
+    std::string line;
+    
+
+    // Getting minimum valuation possible
+    std::getline(matrix_file, line);
+    double min = std::stoi(line);
+    // Getting maximum valuation possible
+    std::getline(matrix_file, line);
+    double max = std::stoi(line);
+
+    // Declaration of a variable to know number off row (users)
+    int rows = 0;
     std::vector<std::string> lines_vec;
-    while (std::getline(matriz, linea))
+    while (std::getline(matrix_file, line))
     {
-        lines_vec.emplace_back(linea);
-        fila++;
+        lines_vec.emplace_back(line);
+        rows++;
     }
 
+    // Checking that the neighbors are in the correct range
+    if (neighbors >= rows)
+    {
+        std::cout << "Error, el número de vecinos debe ser <= al número de usuario -1" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    // Filling the matrix
     Matrix = fillMatrix(lines_vec, min, max);
-    //std::cout << "MATRIZ DE ENTRADA:\n";
-    // printMatrix(Matrix);
     
+    // Normalize the matrix and start the program
     normalizarMatrix(Matrix, min, max);
-    //std::cout << "\nMatriz Normalizada:\n";
-    //printMatrix(Matrix);
+    Start(Matrix, metrics, neighbors, prediction, min, max);
 
-    Start(Matrix, metodo, vecinos, prediccion, min, max);
-
-    // std::cout << "\nMatriz Desnormalizada\n";
+    // Once the program is finished the matrix is denormalized and the resulting matrix is shown
     denormalizarMatrix(Matrix, min, max);
     printMatrix(Matrix);
-
     return 0;
 }
