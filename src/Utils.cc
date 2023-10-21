@@ -1,6 +1,7 @@
 #include "./includes/Utils.h"
 #include "./includes/Metricas/Metricas.h"
 #include "./includes/Predicciones/Predicciones.h"
+#include "./includes/color_text.h"
 
 double normalizarNumero(double num, int min,int max)
 {
@@ -114,17 +115,38 @@ std::vector<double> convertStringVec_Into_DoubleVec (std::string line, double mi
 
 void printMatrix(std::vector<std::vector<double>> Matrix) 
 {
+    // COLOR TEXT CLASS
+    Color::Modifier blue = Color::FG_BLUE;
+    Color::Modifier red = Color::FG_RED;
+    Color::Modifier green = Color::FG_GREEN;
+    Color::Modifier blueBG = Color::BG_BLUE;
+    Color::Modifier redBG = Color::BG_RED;
+    Color::Modifier greenBG = Color::BG_GREEN;
+    Color::Modifier def = Color::BG_DEFAULT;
+
+    std::cout << green << " --- MATRIZ DE UTILIDAD CON LAS PREDICCIONES RESULTANTES SUSTITUIDAS EN LOS '-' DE LA MATRIZ ORIGINAL ---" << def << "\n";
+
     for (int i = 0; i < Matrix.size(); i++) 
     {
-        //std::cout << "entra\n";
         for (int j = 0; j < Matrix[i].size(); j++) 
         {
-            //std::cout << "entra\n";
-            //std::cout << std::setprecision(3) << Matrix[i][j] << " ";
-            std::cout << Matrix[i][j] << " ";
+            std::string elemento_como_string = std::to_string(Matrix[i][j]);
+            if(elemento_como_string.size() == 5) {
+                std::cout << blue << Matrix[i][j] << def << " ";
+            } else if (elemento_como_string.size() < 5) {
+                while (elemento_como_string.size() < 5)
+                {
+                    elemento_como_string += "0";
+                }
+                std::cout << blue << elemento_como_string << def << " ";
+            } else if (elemento_como_string.size() > 5) {
+                std::string substr_ = elemento_como_string.substr(0,5);
+                std::cout << blue << substr_ << def << " ";
+            }
         }
         std::cout << "\n";
     }
+    std::cout << "\n";
 }
 
 std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min, double max)
@@ -161,6 +183,12 @@ void fillGap(std::vector<std::vector<double>> &Matrix, int usu , int item, doubl
 }
 
 void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, int prediccion, double min, double max) {
+    // COLOR TEXT CLASS
+    Color::Modifier blue = Color::FG_BLUE;
+    Color::Modifier red = Color::FG_RED;
+    Color::Modifier green = Color::FG_GREEN;
+    Color::Modifier def = Color::BG_DEFAULT;
+    
     std::vector<std::pair<int,int>> questions = FindAllQuestions(matrix, min);
     for (int i = 0; i < questions.size(); i++) 
     {
@@ -170,11 +198,11 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
         // Obtengo las similitudes del usuario actual con los demas
         std::vector<std::pair<int,double>> all_similarity = GetAllSimilarity(matrix, metodo, user, min);
         
-        std::cout << "----- RELLENANDO USUARIO " << user <<  " ---- ITEM ----" << item << std::endl; 
+        std::cout << green << "----- RELLENANDO USUARIO " << red << user << green <<  " ---- ITEM ----" <<  red << item << def <<std::endl; 
 
         for (int j = 0; j < all_similarity.size(); j++)
         {
-            std::cout << "Similitud usuario: " << all_similarity[j].first << " = " << all_similarity[j].second << std::endl;
+            std::cout << blue << "Similitud usuario: " << red << all_similarity[j].first << blue << " = " << red << all_similarity[j].second <<  def << std::endl;
             // std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
         }
         
@@ -182,16 +210,15 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
         std::vector<std::pair<int,double>> similarity_neighbors = GetNHighest(vecinos, all_similarity);
         for (int j = 0; j < similarity_neighbors.size(); j++)
         {
-            std::cout << "Similitud elegida usuario: " << similarity_neighbors[j].first << " = " << similarity_neighbors[j].second << std::endl;
+            std::cout << green << "Similitud elegida usuario: " << red << similarity_neighbors[j].first << green << " = " << red << similarity_neighbors[j].second << def << std::endl;
             // std::cout << "Media: " << calcularMedia(matrix[all_similarity[j].first], matrix[user], min) << std::endl;
         }
         // Inicio la predicción para ese usuario
         double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediccion, user, min);
-        std::cout << "Prediccion: " << prediction_result << std::endl;
+        std::cout << blue << "Prediccion: " << red << prediction_result << def << "\n\n";
 
         //* Rellenar la matrix
         fillGap(matrix, user, item, prediction_result, max);
-        // printMatrix(matrix);
     }
     
 }
