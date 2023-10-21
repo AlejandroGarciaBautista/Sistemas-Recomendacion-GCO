@@ -3,11 +3,6 @@
 #include "./includes/Predicciones/Predicciones.h"
 #include "./includes/color_text.h"
 
-// double normalizarNumero(double num, int min,int max)
-// {
-//     return ((num - min) / (max - min));
-// }
-
 /**
  * Function that helps to check that the CLI app is used in the correct way and all the
  * arguments are provided
@@ -89,7 +84,7 @@ void Usage(int argc, char *argv[], std::string& file_name, int& m, int& v, int& 
  * Function to normalize the matrix, this function changes the range from [min, max]
  * to [0,1]
 */ 
-void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, double max) 
+void NormalizeMatrix(std::vector<std::vector<double>> &matrix, double min, double max) 
 {
     for (int i = 0; i < matrix.size(); i++) 
     {
@@ -112,7 +107,7 @@ void normalizarMatrix(std::vector<std::vector<double>> &matrix, double min, doub
  * Function to denormalize the matrix, this function changes the range from [0, 1]
  * to the original range defined by [min,max]
 */
-void denormalizarMatrix(std::vector<std::vector<double>> &normalized_matrix, double min, double max) 
+void DenormalizeMatrix(std::vector<std::vector<double>> &normalized_matrix, double min, double max) 
 {
     for (int i = 0; i < normalized_matrix.size(); i++)
     {
@@ -133,7 +128,7 @@ void denormalizarMatrix(std::vector<std::vector<double>> &normalized_matrix, dou
 /**
  * Funtion to know if a character is a number or no
 */
-bool checkIfItsNum(char character_to_check) 
+bool CheckIfItsNum(char character_to_check) 
 {
     // It only checks the range of [0-9] because is only checking char by char
     if (character_to_check == '0' || character_to_check == '1' || character_to_check == '2' || character_to_check == '3' || character_to_check == '4' || character_to_check == '5' || character_to_check == '6' || character_to_check == '7' || character_to_check == '8' || character_to_check == '9' )
@@ -146,7 +141,7 @@ bool checkIfItsNum(char character_to_check)
 /**
  * Function that helps checking if a element of the matrix is on range
 */
-void checkCorrectMatrixElement(double checked_num, double min, double max)
+void CheckCorrectMatrixElement(double checked_num, double min, double max)
 {
     if (checked_num < min || checked_num > max) {
         std::cout << "El valor " << checked_num << " se encuentra fuera del rango de la matrix(" << min << "," << max << ")\n";
@@ -157,13 +152,13 @@ void checkCorrectMatrixElement(double checked_num, double min, double max)
 /**
  * Function that converts a string into a vector of double
 */
-std::vector<double> convertStringVec_Into_DoubleVec(std::string line, double min, double max)
+std::vector<double> ConvertStringVec_Into_DoubleVec(std::string line, double min, double max)
 {
     std::vector<double> double_vec;
     for(int i = 0; i < line.size(); i++) 
     {
         std::string substr = "";
-        if (checkIfItsNum(line[i]))
+        if (CheckIfItsNum(line[i]))
         {
             substr = line[i];
             substr += line[i + 1];
@@ -172,7 +167,7 @@ std::vector<double> convertStringVec_Into_DoubleVec(std::string line, double min
             substr += line[i + 4];
             i += 4;
             // gestion de errores
-            checkCorrectMatrixElement(std::stod(substr), min, max);
+            CheckCorrectMatrixElement(std::stod(substr), min, max);
             double_vec.emplace_back(std::stod(substr));
         }
         else if (line[i] == '-') 
@@ -186,7 +181,7 @@ std::vector<double> convertStringVec_Into_DoubleVec(std::string line, double min
 /**
  * Function to print the matrix
 */
-void printMatrix(std::vector<std::vector<double>> matrix) 
+void PrintMatrix(std::vector<std::vector<double>> matrix) 
 {
     // COLOR TEXT CLASS
     Color::Modifier blue = Color::FG_BLUE;
@@ -225,12 +220,12 @@ void printMatrix(std::vector<std::vector<double>> matrix)
 /**
  * Function to fill the matrix with the file that has been read
 */
-std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, double min, double max)
+std::vector<std::vector<double>> FillMatrix(std::vector<std::string> lines_vec, double min, double max)
 {
     std::vector<std::vector<double>> Matrix;
     for (int i= 0; i < lines_vec.size(); i++) 
     {
-        Matrix.emplace_back(convertStringVec_Into_DoubleVec(lines_vec[i], min, max));
+        Matrix.emplace_back(ConvertStringVec_Into_DoubleVec(lines_vec[i], min, max));
     }
     return Matrix;
 }
@@ -238,7 +233,7 @@ std::vector<std::vector<double>> fillMatrix(std::vector<std::string> lines_vec, 
 /**
  * Function to calculate the arithmetic mean of the ratings of a user using another user who acts as a pivot since they must have rated the same items
 */
-double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, double min) 
+double ArithmeticMean(std::vector<double> usu, std::vector<double> pivot_user, double min) 
 {
     int numItems = 0;
     double media;
@@ -254,7 +249,7 @@ double calcularMedia (std::vector<double> usu, std::vector<double> pivot_user, d
 /**
  * Function to fill the gap (-) of the item x of the user y.
 */
-void fillGap(std::vector<std::vector<double>> &matrix, int usu , int item, double prediction, double max) 
+void FillGap(std::vector<std::vector<double>> &matrix, int usu , int item, double prediction, double max) 
 {
     if (prediction > 1) 
     {
@@ -267,21 +262,21 @@ void fillGap(std::vector<std::vector<double>> &matrix, int usu , int item, doubl
 /**
  * Function that starts the algorithm till it fills all the gaps on the matrix
 */
-void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, int prediccion, double min, double max) {
+void Start(std::vector<std::vector<double>>& matrix, int metric, int neighbors, int prediction, double min, double max) {
     // COLOR TEXT CLASS
     Color::Modifier blue = Color::FG_BLUE;
     Color::Modifier red = Color::FG_RED;
     Color::Modifier green = Color::FG_GREEN;
     Color::Modifier def = Color::BG_DEFAULT;
-    
+    // Getting all the gaps of the matrix
     std::vector<std::pair<int,int>> questions = FindAllQuestions(matrix, min);
     for (int i = 0; i < questions.size(); i++) 
     {
         int user = questions[i].first;
         int item = questions[i].second;
 
-        // Obtengo las similitudes del usuario actual con los demas
-        std::vector<std::pair<int,double>> all_similarity = GetAllSimilarity(matrix, metodo, user, min);
+        // Getting all the similarities of the current user
+        std::vector<std::pair<int,double>> all_similarity = GetAllSimilarity(matrix, metric, user, min);
         
         std::cout << green << "----- RELLENANDO USUARIO " << red << user << green <<  " ---- ITEM ----" <<  red << item << def <<std::endl; 
 
@@ -290,18 +285,18 @@ void Start(std::vector<std::vector<double>>& matrix, int metodo, int vecinos, in
             std::cout << blue << "Similitud usuario: " << red << all_similarity[j].first << blue << " = " << red << all_similarity[j].second <<  def << std::endl;
         }
         
-        // Guardo los vecinos que me interesan
-        std::vector<std::pair<int,double>> similarity_neighbors = GetNHighest(vecinos, all_similarity);
+        // Saving only the n neighbors that were indicated by the user
+        std::vector<std::pair<int,double>> similarity_neighbors = GetNHighest(neighbors, all_similarity);
         for (int j = 0; j < similarity_neighbors.size(); j++)
         {
             std::cout << green << "Similitud elegida usuario: " << red << similarity_neighbors[j].first << green << " = " << red << similarity_neighbors[j].second << def << std::endl;
         }
-        // Inicio la predicción para ese usuario
-        double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediccion, user, min);
+        // Getting the resoult of the prediction
+        double prediction_result = GetPrediction(matrix, item, similarity_neighbors, prediction, user, min);
         std::cout << blue << "Prediccion: " << red << prediction_result << def << "\n\n";
 
-        //* Rellenar la matrix
-        fillGap(matrix, user, item, prediction_result, max);
+        // Filling the actual gap of the matrix
+        FillGap(matrix, user, item, prediction_result, max);
     }
     
 }
@@ -330,28 +325,28 @@ double GetPrediction(std::vector<std::vector<double>> data, int item, std::vecto
  * and on the second part it has the similarity of the pivot user with the user selected.
  * The function evaluates all the users with out pivot user and calculates the similarity.
 */
-std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<double>> matrix, int metodo, int inicio, double min) 
+std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<double>> matrix, int metric, int start_point, double min) 
 {
     std::vector<std::pair<int,double>> result;
-    switch (metodo) 
+    switch(metric) 
     {
         case 1: 
         {
-            if (inicio != 0) {
-                for (int i = 0; i < inicio; i++)
+            if (start_point != 0) {
+                for (int i = 0; i < start_point; i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, Pearson(matrix[start_point], matrix[i], min)));
                 }
 
-                for (int i = inicio + 1; i < matrix.size(); i++)
+                for (int i = start_point + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, Pearson(matrix[start_point], matrix[i], min)));
                 }
             } else 
             {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, coefCorrel(matrix[0], matrix[i], min)));
+                    result.push_back(std::make_pair(i, Pearson(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -359,22 +354,22 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
             
         case 2: 
         {
-            if (inicio != 0) 
+            if (start_point != 0) 
             {
-                for (int i = 0; i < inicio; i++)
+                for (int i = 0; i < start_point; i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, CosineDistance(matrix[start_point], matrix[i], min)));
                 }
 
-                for (int i = inicio + 1; i < matrix.size(); i++)
+                for (int i = start_point + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, CosineDistance(matrix[start_point], matrix[i], min)));
                 }
             } else 
             {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distCoseno(matrix[0], matrix[i], min)));
+                    result.push_back(std::make_pair(i, CosineDistance(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -382,22 +377,22 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
 
         case 3: 
         {
-            if (inicio != 0) 
+            if (start_point != 0) 
             {
-                for (int i = 0; i < inicio; i++)
+                for (int i = 0; i < start_point; i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, EuclideanDistance(matrix[start_point], matrix[i], min)));
                 }
 
-                for (int i = inicio + 1; i < matrix.size(); i++)
+                for (int i = start_point + 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[inicio], matrix[i], min)));
+                    result.push_back(std::make_pair(i, EuclideanDistance(matrix[start_point], matrix[i], min)));
                 }
             } else 
             {
                 for (int i = 1; i < matrix.size(); i++)
                 {
-                    result.push_back(std::make_pair(i, distEuclidea(matrix[0], matrix[i], min)));
+                    result.push_back(std::make_pair(i, EuclideanDistance(matrix[0], matrix[i], min)));
                 }
             }
             break;
@@ -409,19 +404,19 @@ std::vector<std::pair<int,double>> GetAllSimilarity(std::vector<std::vector<doub
 /**
  * Funtion that returns the n highest pairs of similarities, ordered in descending order
 */
-std::vector<std::pair<int,double>> GetNHighest(int vecinos, std::vector<std::pair<int,double>> pairs) 
+std::vector<std::pair<int,double>> GetNHighest(int neighbors, std::vector<std::pair<int,double>> pairs) 
 {
-    std::vector<std::pair<int,double>> similitud_vecinos;
+    std::vector<std::pair<int,double>> similarity_neighbors;
     std::sort(pairs.begin(), pairs.end(), [](const std::pair<int, double>& a, const std::pair<int, double>& b) {
         return a.second > b.second;
     });
 
-    for (int i = 0; i < vecinos && i < pairs.size(); i++) {
+    for (int i = 0; i < neighbors && i < pairs.size(); i++) {
         if (pairs[i].second != -2.000) {
-            similitud_vecinos.push_back(pairs[i]);
+            similarity_neighbors.push_back(pairs[i]);
         }
     }
-    return similitud_vecinos;
+    return similarity_neighbors;
 }
 
 /**

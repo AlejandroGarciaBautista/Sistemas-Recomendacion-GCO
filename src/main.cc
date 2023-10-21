@@ -6,9 +6,9 @@
  * Curso: 4º
  * Sistemas de Recomendación. Métodos de filtrado colaborativo
  * @authors: 
- *  Alejandro García Bautista (alu0101387604)
- *  Lucas Pérez Rosario (alu0101399928)
- *  Adrián González Expósito (alu0101404813)
+ *  -Alejandro García Bautista (alu0101387604)
+ *  -Lucas Pérez Rosario (alu0101399928)
+ *  -Adrián González Expósito (alu0101404813)
  * @date: 24/10/2023
  */
 
@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
 
     // Lets start reading the file
     std::string line;
-    
 
     // Getting minimum valuation possible
     std::getline(matrix_file, line);
@@ -55,14 +54,14 @@ int main(int argc, char *argv[])
     }
 
     // Filling the matrix
-    Matrix = fillMatrix(lines_vec, min, max);
+    Matrix = FillMatrix(lines_vec, min, max);
     
     // Normalize the matrix and start the program
-    normalizarMatrix(Matrix, min, max);
+    NormalizeMatrix(Matrix, min, max);
     Start(Matrix, metrics, neighbors, prediction, min, max);
 
     // Once the program is finished the matrix is denormalized and the resulting matrix is shown
-    denormalizarMatrix(Matrix, min, max);
-    printMatrix(Matrix);
+    DenormalizeMatrix(Matrix, min, max);
+    PrintMatrix(Matrix);
     return 0;
 }

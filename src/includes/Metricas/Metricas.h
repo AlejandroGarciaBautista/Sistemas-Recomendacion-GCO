@@ -1,6 +1,6 @@
 #pragma once 
 #include "../Utils.h"
 
-double coefCorrel(std::vector<double> usu1, std::vector<double> usu2, double min);
-double distCoseno(std::vector<double> usu1, std::vector<double> usu2, double min);
-double distEuclidea(std::vector<double> usu1, std::vector<double> usu2, double min);
+double Pearson(std::vector<double> usu1, std::vector<double> usu2, double min);
+double CosineDistance(std::vector<double> usu1, std::vector<double> usu2, double min);
+double EuclideanDistance(std::vector<double> usu1, std::vector<double> usu2, double min);
