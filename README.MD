@@ -1,4 +1,5 @@
 # ***Sistema de Recomendación. Métodos de de filtrado colaborativo***
+## Práctica de Laboratorio para Gestión del Conocimiento en las Organizaciones
 ## _Autores_
 - Adrián González Expósito (alu0101404813@ull.edu.es)
 - Lucas Pérez Rosario (alu0101399928@ull.edu.es)
@@ -40,13 +41,13 @@ En la opción -m debemos indicar uno de las siguientes Métricas haciendo uso de
 En la opción -v se debe indicar el número de vecinos con los que queremos trabajar, es importante que este número no sea mayor al los vecinos existentes.
 En la opción -p se debe indicar una de los siguientes métodos de predicción haciendo uso de su número identificativo:
 
-    1. Predicción simple 
-    2. Diferencia con la media
+    1. Predicción Simple 
+    2. Diferencia con la Media
 
 Un ejemplo de uso de la aplicación puede ser la siguiente:
 
 ```bash
-./sistemas_recomendacion --fichero matriz_10X25-7.txt -m 1 --vecinos 5 -p 2
+./sistemas_recomendacion --fichero utility-matrix-10-25-7.txt -m 1 --vecinos 5 -p 2
 ```
 
 En el ejemplo estamos haciendo uso del fichero matriz_10X25-7.txt, la métrica para calcular la similitud usamos el Coeficiente de Correlación de Pearson, usamos 5 vecinos y el método de predicción es la Predicción con Diferencia con la media. 
